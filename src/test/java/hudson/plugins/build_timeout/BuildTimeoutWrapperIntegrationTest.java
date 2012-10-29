@@ -4,6 +4,7 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.tasks.BuildWrapper;
+import hudson.tasks.BuildWrappers;
 import hudson.tasks.test.AbstractTestResultAction;
 
 import org.jvnet.hudson.test.Bug;
@@ -18,10 +19,11 @@ public class BuildTimeoutWrapperIntegrationTest extends HudsonTestCase {
 		FreeStyleProject project = (FreeStyleProject) hudson.getItem("9203");
 		
 		// Force a timeout of 1, plugin will not accept less than 3 minutes.
+		System.out.println(project.getBuildWrappersList().size());
 		BuildTimeoutWrapper buildWrapper = (BuildTimeoutWrapper) project.getBuildWrappersList().get(0);
 		buildWrapper.timeoutMinutes = 1;
 		
 		FreeStyleBuild build = project.scheduleBuild2(0).get();
-		assertBuildStatus(Result.FAILURE, build);
+		assertBuildStatus(Result.ABORTED, build);
 	}
 }
